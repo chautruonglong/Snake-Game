@@ -13,7 +13,7 @@
 # How to run code
 Run:
 ```shell 
-run Snake.exe
+run snake.exe
 ```
 # Screen game
 
