@@ -1,11 +1,9 @@
-built:
-	g++ src/main.cpp \
-	-mwindows \
-	-static \
-	-DSFML_STATIC \
-	-I D:/Libraries/SFML/SFML-2.5.1-windows-gcc-7.3.0-mingw-64-bit/SFML-2.5.1/include \
-	-L D:/Libraries/SFML/SFML-2.5.1-windows-gcc-7.3.0-mingw-64-bit/SFML-2.5.1\lib \
-	-l sfml-graphics-s -l sfml-window-s -l sfml-system-s -l sfml-audio-s \
-	-l sfml-audio-s -l sfml-main -l openal32 -l opengl32 -l gdi32 -l ws2_32 \
-	-l flac -l ogg -l freetype -l vorbis -l vorbisenc -l vorbisfile -l winmm \
-	-o snake.exe 
+build:
+	clang++ -std=c++17 src/main.cpp \
+		-I /Users/mclogan/Downloads/SFML-3.0.0/include \
+		-L /Users/mclogan/Downloads/SFML-3.0.0/lib \
+		-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio \
+		-o snake
+
+run:
+	DYLD_LIBRARY_PATH=/Users/mclogan/Downloads/SFML-3.0.0/lib ./snake

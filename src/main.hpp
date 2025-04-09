@@ -9,10 +9,11 @@
 #define MAX 500
 
 using namespace sf;
+using namespace std;
 
 struct Coor {
-	int x;
-	int y;
+	float x;
+	float y;
 	Coor();
 	bool operator == (Coor &obj);
 };

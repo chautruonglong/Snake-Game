@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include <optional>
 
 // All Constructors
 Coor::Coor() : x(0), y(0) {}
@@ -85,20 +86,16 @@ Coor &Food::getPosition() {
 }
 
 int main() {
-	RenderWindow window(VideoMode(WIDTH_CONSOLE, HEIGHT_CONSOLE), "SNAKE!");
-	Event event;
-	Texture texture;
-	Sprite sprite_snake, sprite_food;
-	Snake snake;
-	Food food[5];
-
+	RenderWindow window(VideoMode({ WIDTH_CONSOLE, HEIGHT_CONSOLE }), "SNAKE!");
 	window.setFramerateLimit(30);
 
+	Texture texture;
 	texture.loadFromFile(TILES_IMG);
 	texture.setSmooth(true);
 
-	sprite_snake.setTexture(texture);
-	sprite_food.setTexture(texture);
+	Sprite sprite_snake(texture), sprite_food(texture);
+	Snake snake;
+	Food food[5];
 
 	srand(time(NULL));
 
@@ -107,13 +104,13 @@ int main() {
 	}
 
 	while (window.isOpen()) {
-		while (window.pollEvent(event)) {
-			if (event.type == Event::Closed) window.close();
-			if (event.type == Event::KeyPressed) {
-				if (event.key.code == Keyboard::Up)    snake.listenKeyboard(true, false, false, false);
-				if (event.key.code == Keyboard::Down)  snake.listenKeyboard(false, true, false, false);
-				if (event.key.code == Keyboard::Left)  snake.listenKeyboard(false, false, true, false);
-				if (event.key.code == Keyboard::Right) snake.listenKeyboard(false, false, false, true);
+		while (const optional event = window.pollEvent()) {
+			if (event->is<Event::Closed>()) window.close();
+			else if (const Event::KeyPressed* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+				if (keyPressed->scancode == Keyboard::Scancode::Up)    snake.listenKeyboard(true, false, false, false);
+				if (keyPressed->scancode == Keyboard::Scancode::Down)  snake.listenKeyboard(false, true, false, false);
+				if (keyPressed->scancode == Keyboard::Scancode::Left)  snake.listenKeyboard(false, false, true, false);
+				if (keyPressed->scancode == Keyboard::Scancode::Right) snake.listenKeyboard(false, false, false, true);
 			}
 		}
 		snake.update();
@@ -125,16 +122,16 @@ int main() {
 		}
 		window.clear(Color::White);
 		for (int i = 0; i < 5; ++i) {
-			sprite_food.setPosition(food[i].getPosition().x * SCALE, food[i].getPosition().y * SCALE);
-			sprite_food.setTextureRect(IntRect(WIDTH_IMG * (rand() % 7), 0, SCALE, SCALE));
+			sprite_food.setPosition({ food[i].getPosition().x * SCALE, food[i].getPosition().y * SCALE });
+			sprite_food.setTextureRect(IntRect({ WIDTH_IMG * (rand() % 7), 0 }, { SCALE, SCALE }));
 			window.draw(sprite_food);
 		}
 
 
 		int count = 0;
 		for (int i = 0; i < snake.length(); ++i) {
-			sprite_snake.setPosition(snake.getPosition()[i].x * SCALE, snake.getPosition()[i].y * SCALE);
-			sprite_snake.setTextureRect(IntRect(WIDTH_IMG * count, 0, SCALE, SCALE));
+			sprite_snake.setPosition({ snake.getPosition()[i].x * SCALE, snake.getPosition()[i].y * SCALE });
+			sprite_snake.setTextureRect(IntRect({ WIDTH_IMG * count, 0 }, { SCALE, SCALE }));
 			++count;
 			if (count == 6) count = 0;
 			window.draw(sprite_snake);
